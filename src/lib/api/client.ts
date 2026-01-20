@@ -1,7 +1,8 @@
 import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { env } from '@/lib/env';
 import { getAccessToken, getRefreshToken, setTokens, clearTokens } from '@/lib/auth/token-store';
-import type { ApiResponse, RefreshResponse } from '@/types/api';
+import type { ApiResponse, RefreshResponse, ApiError } from '@/types/api';
+import { normalizeApiError } from './errors';
 
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({
@@ -79,13 +80,14 @@ apiClient.interceptors.response.use(
 
       if (!refreshToken) {
         clearTokens();
-        processQueue(error, null);
+        const normalizedError = normalizeApiError(error);
+        processQueue(normalizedError as unknown as AxiosError, null);
         isRefreshing = false;
         // Redirect to login or handle unauthenticated state
         if (typeof window !== 'undefined') {
           window.location.href = '/login';
         }
-        return Promise.reject(error);
+        return Promise.reject(normalizedError);
       }
 
       try {
@@ -111,18 +113,23 @@ apiClient.interceptors.response.use(
       } catch (refreshError) {
         // Refresh failed, clear tokens and redirect to login
         clearTokens();
-        processQueue(refreshError as AxiosError, null);
+        const normalizedError = normalizeApiError(
+          refreshError as AxiosError
+        );
+        processQueue(normalizedError as unknown as AxiosError, null);
         isRefreshing = false;
 
         if (typeof window !== 'undefined') {
           window.location.href = '/login';
         }
 
-        return Promise.reject(refreshError);
+        return Promise.reject(normalizedError);
       }
     }
 
-    return Promise.reject(error);
+    // Normalize error before rejecting
+    const normalizedError = normalizeApiError(error);
+    return Promise.reject(normalizedError);
   }
 );
 

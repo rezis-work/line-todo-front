@@ -44,5 +44,7 @@ export interface ApiError {
   message: string;
   statusCode: number;
   requestId?: string;
+  code?: string;
+  details?: unknown;
 }
 
