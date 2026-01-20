@@ -12,12 +12,13 @@ interface AuthGuardProps {
 export function AuthGuard({ children }: AuthGuardProps) {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
-  const hasToken = isAuthenticated();
+  const [hasToken, setHasToken] = useState(false);
   const { data: user, isLoading, isError } = useMeQuery();
 
   // Wait for client-side to take over to avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
+    setHasToken(isAuthenticated());
   }, []);
 
   useEffect(() => {

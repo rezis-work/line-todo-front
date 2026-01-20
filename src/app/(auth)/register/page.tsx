@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Link from 'next/link';
-import { useRegister, useMeQuery } from '@/hooks/useAuth';
+import { useRegister } from '@/hooks/useAuth';
 import { isAuthenticated } from '@/lib/auth/token-store';
 import { Button } from '@/components/ui/button';
 import {
@@ -36,18 +36,23 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 export default function RegisterPage() {
   const router = useRouter();
   const register = useRegister();
-  const hasToken = isAuthenticated();
-  const { data: user } = useMeQuery();
+  const [mounted, setMounted] = useState(false);
+  const [hasToken, setHasToken] = useState(false);
 
-  // Redirect if already authenticated
   useEffect(() => {
-    if (hasToken && user) {
+    setMounted(true);
+    setHasToken(isAuthenticated());
+  }, []);
+
+  // Redirect if already authenticated (only check token, don't need user data)
+  useEffect(() => {
+    if (mounted && hasToken) {
       router.push('/');
     }
-  }, [hasToken, user, router]);
+  }, [mounted, hasToken, router]);
 
   // Don't render form if already authenticated
-  if (hasToken && user) {
+  if (!mounted || hasToken) {
     return null;
   }
 
