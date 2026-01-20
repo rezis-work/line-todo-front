@@ -1,6 +1,6 @@
 'use client';
 
-import { useMeQuery } from '@/hooks/useAuth';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { useLogout } from '@/hooks/useAuth';
 import { getRefreshToken } from '@/lib/auth/token-store';
@@ -8,7 +8,7 @@ import { ThemeSwitcher } from '@/components/theme/theme-switcher';
 import Link from 'next/link';
 
 export default function MePage() {
-  const { data: user, isLoading } = useMeQuery();
+  const { user, isLoading } = useAuth();
   const logout = useLogout();
 
   const handleLogout = () => {

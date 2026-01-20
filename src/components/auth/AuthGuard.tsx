@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useMeQuery } from '@/hooks/useAuth';
+import { useAuth } from '@/contexts/AuthContext';
 import { isAuthenticated } from '@/lib/auth/token-store';
 
 interface AuthGuardProps {
@@ -13,7 +13,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [hasToken, setHasToken] = useState(false);
-  const { data: user, isLoading, isError } = useMeQuery();
+  const { user, isLoading, isError } = useAuth();
 
   // Wait for client-side to take over to avoid hydration mismatch
   useEffect(() => {

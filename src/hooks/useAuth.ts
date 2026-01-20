@@ -22,15 +22,24 @@ import { isApiError } from '@/lib/api/errors';
  */
 export function useMeQuery() {
   const [mounted, setMounted] = useState(false);
+  const [hasToken, setHasToken] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    setHasToken(isAuthenticated());
   }, []);
+
+  // Update hasToken when mounted state changes or when tokens might change
+  useEffect(() => {
+    if (mounted) {
+      setHasToken(isAuthenticated());
+    }
+  }, [mounted]);
 
   return useQuery<User>({
     queryKey: ['auth', 'me'],
     queryFn: getMe,
-    enabled: mounted && isAuthenticated(),
+    enabled: mounted && hasToken,
     retry: false,
   });
 }
@@ -57,7 +66,6 @@ export function useRegister() {
 
       // Redirect to app
       router.push('/');
-      router.refresh();
 
       toast({
         title: 'Success',
@@ -99,7 +107,6 @@ export function useLogin() {
 
       // Redirect to app
       router.push('/');
-      router.refresh();
 
       toast({
         title: 'Success',
@@ -136,9 +143,8 @@ export function useLogout() {
       // Clear all queries
       queryClient.clear();
 
-      // Redirect to login
+      // Redirect to login (router.push handles navigation)
       router.push('/login');
-      router.refresh();
 
       toast({
         title: 'Success',
@@ -150,7 +156,6 @@ export function useLogout() {
       clearTokens();
       queryClient.clear();
       router.push('/login');
-      router.refresh();
 
       const message = isApiError(error)
         ? error.message

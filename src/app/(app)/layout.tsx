@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { AuthGuard } from '@/components/auth/AuthGuard';
-import { useMeQuery } from '@/hooks/useAuth';
 import { useLogout } from '@/hooks/useAuth';
+import { useAuth } from '@/contexts/AuthContext';
 import { getRefreshToken } from '@/lib/auth/token-store';
 import { Button } from '@/components/ui/button';
 
@@ -12,8 +12,8 @@ export default function AuthenticatedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { data: user } = useMeQuery();
   const logout = useLogout();
+  const { user } = useAuth();
 
   const handleLogout = () => {
     const refreshToken = getRefreshToken();
