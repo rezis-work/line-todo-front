@@ -13,7 +13,7 @@ export default function Home() {
         <Button asChild>
           <Link href="/register">Register</Link>
         </Button>
-      </div>
+        </div>
     </div>
   );
 }

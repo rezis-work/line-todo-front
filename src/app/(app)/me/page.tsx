@@ -4,6 +4,7 @@ import { useMeQuery } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { useLogout } from '@/hooks/useAuth';
 import { getRefreshToken } from '@/lib/auth/token-store';
+import { ThemeSwitcher } from '@/components/theme/theme-switcher';
 import Link from 'next/link';
 
 export default function MePage() {
@@ -74,6 +75,15 @@ export default function MePage() {
                 day: 'numeric',
               })}
             </p>
+          </div>
+
+          <div className="pt-4 border-t">
+            <label className="text-sm font-medium text-muted-foreground">
+              Theme
+            </label>
+            <div className="mt-2">
+              <ThemeSwitcher />
+            </div>
           </div>
         </div>
 

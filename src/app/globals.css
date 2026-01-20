@@ -4,6 +4,8 @@
 
 @layer base {
   :root {
+    --font-sans: var(--font-sans);
+    --font-mono: var(--font-mono);
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -66,4 +68,26 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Smooth theme transition animations */
+html {
+  transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth color transitions for all elements */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.8s;
+}
+
+/* Faster transitions for interactive elements */
+button,
+a,
+input,
+select,
+textarea {
+  transition-duration: 0.3s;
 }
