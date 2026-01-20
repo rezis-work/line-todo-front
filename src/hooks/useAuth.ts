@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { register, login, logout, getMe } from '@/lib/api/auth';
-import { setTokens, clearTokens, getRefreshToken } from '@/lib/auth/token-store';
+import { setTokens, clearTokens } from '@/lib/auth/token-store';
 import type {
   RegisterInput,
   LoginInput,
