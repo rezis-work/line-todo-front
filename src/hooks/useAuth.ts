@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { register, login, logout, getMe } from '@/lib/api/auth';
@@ -20,10 +21,16 @@ import { isApiError } from '@/lib/api/errors';
  * Query hook to get current user
  */
 export function useMeQuery() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return useQuery<User>({
     queryKey: ['auth', 'me'],
     queryFn: getMe,
-    enabled: isAuthenticated(),
+    enabled: mounted && isAuthenticated(),
     retry: false,
   });
 }
