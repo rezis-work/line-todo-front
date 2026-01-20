@@ -32,6 +32,15 @@ export default function LoginPage() {
   const [mounted, setMounted] = useState(false);
   const [hasToken, setHasToken] = useState(false);
 
+  // Always call hooks unconditionally (Rules of Hooks)
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
   useEffect(() => {
     setMounted(true);
     setHasToken(isAuthenticated());
@@ -48,14 +57,6 @@ export default function LoginPage() {
   if (!mounted || hasToken) {
     return null;
   }
-
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
 
   const onSubmit = (data: LoginFormValues) => {
     login.mutate(data);

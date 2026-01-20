@@ -39,6 +39,17 @@ export default function RegisterPage() {
   const [mounted, setMounted] = useState(false);
   const [hasToken, setHasToken] = useState(false);
 
+  // Always call hooks unconditionally (Rules of Hooks)
+  const form = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      name: '',
+      confirmPassword: '',
+    },
+  });
+
   useEffect(() => {
     setMounted(true);
     setHasToken(isAuthenticated());
@@ -55,16 +66,6 @@ export default function RegisterPage() {
   if (!mounted || hasToken) {
     return null;
   }
-
-  const form = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-      name: '',
-      confirmPassword: '',
-    },
-  });
 
   const onSubmit = (data: RegisterFormValues) => {
     const { confirmPassword, ...registerData } = data;
