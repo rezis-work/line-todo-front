@@ -22,24 +22,19 @@ import { isApiError } from '@/lib/api/errors';
  */
 export function useMeQuery() {
   const [mounted, setMounted] = useState(false);
-  const [hasToken, setHasToken] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    setHasToken(isAuthenticated());
   }, []);
 
-  // Update hasToken when mounted state changes or when tokens might change
-  useEffect(() => {
-    if (mounted) {
-      setHasToken(isAuthenticated());
-    }
-  }, [mounted]);
+  // Check authentication directly instead of using state
+  // This ensures the query enables/disables immediately when tokens change
+  const hasToken = mounted && isAuthenticated();
 
   return useQuery<User>({
     queryKey: ['auth', 'me'],
     queryFn: getMe,
-    enabled: mounted && hasToken,
+    enabled: hasToken,
     retry: false,
   });
 }

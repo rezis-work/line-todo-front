@@ -1,13 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Link from 'next/link';
-import { useLogin } from '@/hooks/useAuth';
-import { isAuthenticated } from '@/lib/auth/token-store';
+import { useLogin, useMeQuery } from '@/hooks/useAuth';
+import { isAuthenticated, clearTokens } from '@/lib/auth/token-store';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -28,9 +28,13 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const login = useLogin();
   const [mounted, setMounted] = useState(false);
   const [hasToken, setHasToken] = useState(false);
+  
+  // Only query user if token exists (to verify it's valid)
+  const { data: user, isLoading: isLoadingUser, isError: isUserError } = useMeQuery();
 
   // Always call hooks unconditionally (Rules of Hooks)
   const form = useForm<LoginFormValues>({
@@ -46,16 +50,44 @@ export default function LoginPage() {
     setHasToken(isAuthenticated());
   }, []);
 
-  // Redirect if already authenticated (only check token, don't need user data)
+  // Update hasToken when it changes
   useEffect(() => {
-    if (mounted && hasToken) {
+    if (mounted) {
+      setHasToken(isAuthenticated());
+    }
+  }, [mounted]);
+
+  // Clear invalid tokens if user query fails
+  useEffect(() => {
+    if (mounted && hasToken && isUserError) {
+      clearTokens();
+      setHasToken(false);
+    }
+  }, [mounted, hasToken, isUserError]);
+
+  // Redirect if already authenticated (user data loaded successfully)
+  // Only redirect if we're on the login page
+  useEffect(() => {
+    if (mounted && hasToken && user && pathname === '/login') {
       router.push('/');
     }
-  }, [mounted, hasToken, router]);
+  }, [mounted, hasToken, user, pathname, router]);
 
-  // Don't render form if already authenticated
-  if (!mounted || hasToken) {
+  // Don't render form if already authenticated and user data loaded
+  if (!mounted || (hasToken && user)) {
     return null;
+  }
+
+  // Show loading while checking auth
+  if (hasToken && isLoadingUser) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />
+          <p className="text-sm text-muted-foreground">Checking authentication...</p>
+        </div>
+      </div>
+    );
   }
 
   const onSubmit = (data: LoginFormValues) => {

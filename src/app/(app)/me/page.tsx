@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useLogout } from '@/hooks/useAuth';
 import { getRefreshToken } from '@/lib/auth/token-store';
 import { ThemeSwitcher } from '@/components/theme/theme-switcher';
+import { CreateWorkspaceDialog } from '@/components/workspaces/CreateWorkspaceDialog';
 import Link from 'next/link';
 
 export default function MePage() {
@@ -87,10 +88,11 @@ export default function MePage() {
           </div>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-wrap">
           <Button variant="outline" asChild>
             <Link href="/">Back to Home</Link>
           </Button>
+          <CreateWorkspaceDialog />
           <Button variant="destructive" onClick={handleLogout} disabled={logout.isPending}>
             {logout.isPending ? 'Logging out...' : 'Logout'}
           </Button>

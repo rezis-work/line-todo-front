@@ -48,3 +48,43 @@ export interface ApiError {
   details?: unknown;
 }
 
+export enum WorkspaceRole {
+  OWNER = 'OWNER',
+  ADMIN = 'ADMIN',
+  MEMBER = 'MEMBER',
+}
+
+export interface Workspace {
+  id: string;
+  name: string;
+  ownerId: string;
+  createdAt: string;
+  updatedAt: string;
+  role: WorkspaceRole;
+}
+
+export interface WorkspaceMember {
+  userId: string;
+  email: string;
+  name: string | null;
+  role: WorkspaceRole;
+  createdAt: string;
+}
+
+export interface CreateWorkspaceInput {
+  name: string;
+}
+
+export interface AddMemberInput {
+  email: string;
+  role: WorkspaceRole;
+}
+
+export interface UpdateMemberRoleInput {
+  role: WorkspaceRole;
+}
+
+export interface UpdateWorkspaceInput {
+  name: string;
+}
+
