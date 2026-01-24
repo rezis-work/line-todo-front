@@ -197,3 +197,66 @@ export interface TodoStats {
   dueThisWeek: number;
 }
 
+// Calendar Types
+export interface CalendarEvent {
+  id: string;
+  workspaceId: string;
+  title: string;
+  startAt: string;
+  endAt: string;
+  relatedTodoId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  relatedTodo: {
+    id: string;
+    title: string;
+    status: TodoStatus;
+    priority: TodoPriority;
+  } | null;
+}
+
+export interface CreateCalendarEventInput {
+  title: string;
+  startAt: string;
+  endAt: string;
+  relatedTodoId?: string;
+}
+
+export interface UpdateCalendarEventInput {
+  title?: string;
+  startAt?: string;
+  endAt?: string;
+  relatedTodoId?: string | null;
+}
+
+export interface CalendarEventFilters {
+  startAfter?: string;
+  startBefore?: string;
+  endAfter?: string;
+  endBefore?: string;
+  relatedTodoId?: string;
+  search?: string;
+  sortBy?: 'startAt' | 'endAt' | 'createdAt' | 'title';
+  sortOrder?: 'asc' | 'desc';
+  page?: number;
+  limit?: number;
+}
+
+export interface CalendarEventListResponse {
+  events: CalendarEvent[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+export interface CalendarStats {
+  total: number;
+  todayCount: number;
+  thisWeekCount: number;
+  thisMonthCount: number;
+  linkedToTodos: number;
+}
+

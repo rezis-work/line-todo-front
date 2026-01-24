@@ -4,7 +4,7 @@ import { useCurrentWorkspace } from '@/hooks/useCurrentWorkspace';
 import { WorkspaceRole } from '@/types/api';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Settings } from 'lucide-react';
+import { Settings, Calendar } from 'lucide-react';
 import { TodoDashboard } from '@/components/todos/TodoDashboard';
 
 export default function WorkspaceDashboardPage() {
@@ -95,6 +95,12 @@ export default function WorkspaceDashboardPage() {
                 <Link href={`/w/${workspace.id}/settings`}>
                   <Settings className="mr-2 h-4 w-4" />
                   Manage Settings
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full justify-start">
+                <Link href={`/w/${workspace.id}/calendar`}>
+                  <Calendar className="mr-2 h-4 w-4" />
+                  Calendar
                 </Link>
               </Button>
             </div>

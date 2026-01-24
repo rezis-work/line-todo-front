@@ -174,11 +174,11 @@ export function TodoDialog({
       createTodo.mutate(
         {
           title: data.title!,
-          description: data.description,
+          description: data.description || undefined,
           status: data.status,
           priority: data.priority,
           dueAt: data.dueAt ? new Date(data.dueAt).toISOString() : undefined,
-          assignedToId: data.assignedToId,
+          assignedToId: data.assignedToId || undefined,
         },
         {
           onSuccess: () => {
