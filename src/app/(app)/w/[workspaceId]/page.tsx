@@ -5,6 +5,7 @@ import { WorkspaceRole } from '@/types/api';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Settings } from 'lucide-react';
+import { TodoDashboard } from '@/components/todos/TodoDashboard';
 
 export default function WorkspaceDashboardPage() {
   const { workspace, role, isLoading, isError } = useCurrentWorkspace();
@@ -100,11 +101,14 @@ export default function WorkspaceDashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-lg border p-6">
-          <h2 className="text-lg font-semibold mb-4">Todos</h2>
-          <p className="text-sm text-muted-foreground">
-            Todo lists will appear here. This feature is coming soon!
-          </p>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Todos</h2>
+            <Button asChild>
+              <Link href={`/w/${workspace.id}/todos`}>View All Todos</Link>
+            </Button>
+          </div>
+          <TodoDashboard workspaceId={workspace.id} />
         </div>
       </div>
     </div>
