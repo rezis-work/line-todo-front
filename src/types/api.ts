@@ -5,6 +5,24 @@ export interface User {
   createdAt: string;
 }
 
+export interface UserProfileResponse {
+  id: string;
+  email: string;
+  name: string | null;
+  createdAt: string;
+  updatedAt: string;
+  workspaceCount: number;
+}
+
+export interface UpdateUserInput {
+  name?: string;
+}
+
+export interface ChangePasswordInput {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export interface RegisterInput {
   email: string;
   password: string;

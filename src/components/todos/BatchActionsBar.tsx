@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { TodoStatus, TodoPriority } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,6 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useBatchUpdateTodos, useBatchDeleteTodos } from '@/hooks/useTodos';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Trash2, X } from 'lucide-react';
 
 interface BatchActionsBarProps {
@@ -27,6 +29,7 @@ export function BatchActionsBar({
 }: BatchActionsBarProps) {
   const batchUpdate = useBatchUpdateTodos(workspaceId);
   const batchDelete = useBatchDeleteTodos(workspaceId);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const handleBatchUpdate = (
     field: 'status' | 'priority' | 'assignedToId',
@@ -45,21 +48,19 @@ export function BatchActionsBar({
     );
   };
 
-  const handleBatchDelete = () => {
-    if (
-      confirm(
-        `Are you sure you want to delete ${selectedIds.length} todo(s)? This action cannot be undone.`
-      )
-    ) {
-      batchDelete.mutate(
-        { todoIds: selectedIds },
-        {
-          onSuccess: () => {
-            onClearSelection();
-          },
-        }
-      );
-    }
+  const handleBatchDeleteClick = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const handleBatchDeleteConfirm = () => {
+    batchDelete.mutate(
+      { todoIds: selectedIds },
+      {
+        onSuccess: () => {
+          onClearSelection();
+        },
+      }
+    );
   };
 
   if (selectedIds.length === 0) {
@@ -139,7 +140,7 @@ export function BatchActionsBar({
           <Button
             variant="destructive"
             size="sm"
-            onClick={handleBatchDelete}
+            onClick={handleBatchDeleteClick}
             disabled={isLoading}
           >
             <Trash2 className="mr-2 h-4 w-4" />
@@ -156,6 +157,17 @@ export function BatchActionsBar({
           </Button>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Delete Todos"
+        description={`Are you sure you want to delete ${selectedIds.length} todo(s)? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="destructive"
+        onConfirm={handleBatchDeleteConfirm}
+      />
     </div>
   );
 }

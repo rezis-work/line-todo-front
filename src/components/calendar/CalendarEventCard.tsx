@@ -3,6 +3,7 @@
 import { CalendarEvent } from '@/types/api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useDeleteCalendarEvent } from '@/hooks/useCalendar';
 import { Edit, Trash2, Calendar as CalendarIcon } from 'lucide-react';
 import { CalendarEventDialog } from './CalendarEventDialog';
@@ -20,12 +21,15 @@ export function CalendarEventCard({
   onEdit,
 }: CalendarEventCardProps) {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const deleteEvent = useDeleteCalendarEvent(workspaceId);
 
-  const handleDelete = () => {
-    if (confirm('Are you sure you want to delete this event?')) {
-      deleteEvent.mutate(event.id);
-    }
+  const handleDeleteClick = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    deleteEvent.mutate(event.id);
   };
 
   const handleEdit = () => {
@@ -66,7 +70,7 @@ export function CalendarEventCard({
               <Button variant="outline" size="sm" onClick={handleEdit}>
                 <Edit className="h-4 w-4" />
               </Button>
-              <Button variant="destructive" size="sm" onClick={handleDelete}>
+              <Button variant="destructive" size="sm" onClick={handleDeleteClick}>
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
@@ -86,6 +90,17 @@ export function CalendarEventCard({
         event={event}
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
+      />
+
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Delete Event"
+        description="Are you sure you want to delete this event? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="destructive"
+        onConfirm={handleDeleteConfirm}
       />
     </>
   );

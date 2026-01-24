@@ -6,6 +6,7 @@ import { useCurrentWorkspace } from '@/hooks/useCurrentWorkspace';
 import { useTodoDetailQuery } from '@/hooks/useTodos';
 import { TodoDialog } from '@/components/todos/TodoDialog';
 import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,15 +26,18 @@ export default function TodoDetailPage() {
   );
   const deleteTodo = useDeleteTodo(workspaceId);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const handleDelete = () => {
-    if (confirm('Are you sure you want to delete this todo?')) {
-      deleteTodo.mutate(todoId, {
-        onSuccess: () => {
-          router.push(`/w/${workspaceId}/todos`);
-        },
-      });
-    }
+  const handleDeleteClick = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    deleteTodo.mutate(todoId, {
+      onSuccess: () => {
+        router.push(`/w/${workspaceId}/todos`);
+      },
+    });
   };
 
   if (workspaceLoading || todoLoading) {
@@ -123,7 +127,7 @@ export default function TodoDetailPage() {
                   onOpenChange={setEditDialogOpen}
                   trigger={<Button variant="outline">Edit</Button>}
                 />
-                <Button variant="destructive" onClick={handleDelete}>
+                <Button variant="destructive" onClick={handleDeleteClick}>
                   Delete
                 </Button>
               </div>
@@ -196,6 +200,17 @@ export default function TodoDetailPage() {
             </div>
           </CardContent>
         </Card>
+
+        <ConfirmDialog
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+          title="Delete Todo"
+          description="Are you sure you want to delete this todo? This action cannot be undone."
+          confirmText="Delete"
+          cancelText="Cancel"
+          variant="destructive"
+          onConfirm={handleDeleteConfirm}
+        />
       </div>
     </div>
   );
