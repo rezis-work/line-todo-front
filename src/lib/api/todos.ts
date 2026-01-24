@@ -1,4 +1,4 @@
-import { api } from './client';
+import { api, default as apiClient } from './client';
 import type {
   Todo,
   TodoListResponse,
@@ -9,6 +9,7 @@ import type {
   BatchUpdateInput,
   BatchDeleteInput,
 } from '@/types/api';
+import type { ApiResponse } from '@/types/api';
 
 /**
  * Build query string from filters object
@@ -148,8 +149,10 @@ export async function batchDeleteTodos(
   workspaceId: string,
   input: BatchDeleteInput
 ): Promise<void> {
-  return api.delete<void>(`/workspaces/${workspaceId}/todos/batch`, {
-    data: input,
-  });
+  const response = await apiClient.delete<ApiResponse<void>>(
+    `/workspaces/${workspaceId}/todos/batch`,
+    { data: input }
+  );
+  return response.data.data;
 }
 
