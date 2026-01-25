@@ -62,9 +62,18 @@ export function TaskChatPanel({
 
   // Clone trigger element and add onClick handler if it's a valid React element
   const triggerElement = trigger && isValidElement(trigger)
-    ? cloneElement(trigger as React.ReactElement, {
-        onClick: handleTriggerClick,
-      })
+    ? cloneElement(
+        trigger as React.ReactElement<React.HTMLAttributes<HTMLElement>>,
+        {
+          onClick: (e: React.MouseEvent<HTMLElement>) => {
+            const originalOnClick = (trigger as React.ReactElement<React.HTMLAttributes<HTMLElement>>).props?.onClick;
+            if (originalOnClick) {
+              originalOnClick(e);
+            }
+            handleTriggerClick();
+          },
+        } as Partial<React.HTMLAttributes<HTMLElement>>
+      )
     : trigger;
 
   return (
