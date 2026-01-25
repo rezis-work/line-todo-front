@@ -49,15 +49,18 @@ export function useRegister() {
 
   return useMutation<AuthResponse, Error, RegisterInput>({
     mutationFn: register,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       // Store tokens
       setTokens({
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
       });
 
-      // Invalidate and refetch user data
-      queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
+      // Set user data immediately to avoid loading state
+      queryClient.setQueryData<User>(['auth', 'me'], data.user);
+
+      // Refetch to ensure data is fresh
+      await queryClient.refetchQueries({ queryKey: ['auth', 'me'] });
 
       // Redirect to app
       router.push('/');
@@ -90,15 +93,18 @@ export function useLogin() {
 
   return useMutation<AuthResponse, Error, LoginInput>({
     mutationFn: login,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       // Store tokens
       setTokens({
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
       });
 
-      // Invalidate and refetch user data
-      queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
+      // Set user data immediately to avoid loading state
+      queryClient.setQueryData<User>(['auth', 'me'], data.user);
+
+      // Refetch to ensure data is fresh
+      await queryClient.refetchQueries({ queryKey: ['auth', 'me'] });
 
       // Redirect to app
       router.push('/');
