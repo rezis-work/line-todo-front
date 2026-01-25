@@ -3,9 +3,10 @@
 import { Todo, TodoStatus, TodoPriority } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { TaskChatPanel } from '@/components/ai/TaskChatPanel';
 import { cn } from '@/lib/utils';
 // Using native Date formatting instead of date-fns
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, MessageSquare } from 'lucide-react';
 
 interface TodoItemProps {
   todo: Todo;
@@ -77,6 +78,14 @@ export function TodoItem({
               )}
             </div>
             <div className="flex items-center gap-2">
+              <TaskChatPanel
+                todoId={todo.id}
+                trigger={
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                    <MessageSquare className="h-4 w-4" />
+                  </Button>
+                }
+              />
               {onEdit && (
                 <Button
                   variant="ghost"

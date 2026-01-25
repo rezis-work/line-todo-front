@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCurrentWorkspace } from '@/hooks/useCurrentWorkspace';
+import { GlobalChatButton } from '@/components/ai/GlobalChatSidebar';
 
 interface WorkspaceLayoutContentProps {
   children: React.ReactNode;
@@ -38,6 +39,11 @@ export function WorkspaceLayoutContent({
     return null;
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <GlobalChatButton />
+    </>
+  );
 }
 

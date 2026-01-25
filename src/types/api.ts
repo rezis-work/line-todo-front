@@ -278,3 +278,44 @@ export interface CalendarStats {
   linkedToTodos: number;
 }
 
+// AI Chat Types
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  createdAt: string;
+}
+
+export interface ChatHistoryResponse {
+  sessionId: string;
+  chatType: 'TASK' | 'GLOBAL';
+  todoId: string | null;
+  messages: ChatMessage[];
+}
+
+export interface ChatMessageInput {
+  message: string;
+}
+
+export interface SSEStartEvent {
+  type: 'start';
+  sessionId: string;
+}
+
+export interface SSETokenEvent {
+  type: 'token';
+  content: string;
+}
+
+export interface SSEDoneEvent {
+  type: 'done';
+  message: ChatMessage;
+}
+
+export interface SSEErrorEvent {
+  type: 'error';
+  error: string;
+}
+
+export type SSEEvent = SSEStartEvent | SSETokenEvent | SSEDoneEvent | SSEErrorEvent;
+

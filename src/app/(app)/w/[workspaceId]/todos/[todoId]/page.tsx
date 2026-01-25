@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { useCurrentWorkspace } from '@/hooks/useCurrentWorkspace';
 import { useTodoDetailQuery } from '@/hooks/useTodos';
 import { TodoDialog } from '@/components/todos/TodoDialog';
+import { TaskChatPanel } from '@/components/ai/TaskChatPanel';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Loader2, ArrowLeft } from 'lucide-react';
@@ -127,6 +128,7 @@ export default function TodoDetailPage() {
                   onOpenChange={setEditDialogOpen}
                   trigger={<Button variant="outline">Edit</Button>}
                 />
+                <TaskChatPanel todoId={todoId} />
                 <Button variant="destructive" onClick={handleDeleteClick}>
                   Delete
                 </Button>

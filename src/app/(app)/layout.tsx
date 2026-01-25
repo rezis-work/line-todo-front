@@ -9,7 +9,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getRefreshToken } from '@/lib/auth/token-store';
 import { Button } from '@/components/ui/button';
 import { WorkspaceSwitcher } from '@/components/workspaces/WorkspaceSwitcher';
-import { Settings, Menu } from 'lucide-react';
+import { GlobalChatSidebar } from '@/components/ai/GlobalChatSidebar';
+import { Settings, Menu, MessageSquare } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -28,6 +29,7 @@ export default function AuthenticatedLayout({
   const logout = useLogout();
   const { user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isGlobalChatOpen, setIsGlobalChatOpen] = useState(false);
 
   // Detect if user is in a workspace context
   const workspaceMatch = pathname.match(/^\/w\/([^/]+)/);
@@ -64,11 +66,22 @@ export default function AuthenticatedLayout({
                 <>
                   <WorkspaceSwitcher />
                   {workspaceId && (
-                    <Button asChild variant="ghost" size="sm">
-                      <Link href={`/w/${workspaceId}/settings`}>
-                        <Settings className="h-4 w-4" />
-                      </Link>
-                    </Button>
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsGlobalChatOpen(true)}
+                        className="gap-2"
+                      >
+                        <MessageSquare className="h-4 w-4" />
+                        AI Chat
+                      </Button>
+                      <Button asChild variant="ghost" size="sm">
+                        <Link href={`/w/${workspaceId}/settings`}>
+                          <Settings className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </>
                   )}
                   <Link
                     href="/me"
@@ -110,14 +123,27 @@ export default function AuthenticatedLayout({
                           <WorkspaceSwitcher />
                         </div>
                         {workspaceId && (
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start"
-                            onClick={() => handleNavigation(`/w/${workspaceId}/settings`)}
-                          >
-                            <Settings className="mr-2 h-4 w-4" />
-                            Workspace Settings
-                          </Button>
+                          <>
+                            <Button
+                              variant="ghost"
+                              className="w-full justify-start"
+                              onClick={() => {
+                                setIsGlobalChatOpen(true);
+                                setMobileMenuOpen(false);
+                              }}
+                            >
+                              <MessageSquare className="mr-2 h-4 w-4" />
+                              AI Chat
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              className="w-full justify-start"
+                              onClick={() => handleNavigation(`/w/${workspaceId}/settings`)}
+                            >
+                              <Settings className="mr-2 h-4 w-4" />
+                              Workspace Settings
+                            </Button>
+                          </>
                         )}
                         <Button
                           variant="ghost"
@@ -143,6 +169,7 @@ export default function AuthenticatedLayout({
           </div>
         </nav>
         <main>{children}</main>
+        <GlobalChatSidebar open={isGlobalChatOpen} onOpenChange={setIsGlobalChatOpen} />
       </div>
     </AuthGuard>
   );
